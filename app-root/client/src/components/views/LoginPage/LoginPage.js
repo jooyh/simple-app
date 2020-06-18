@@ -1,12 +1,12 @@
 import React, { useState } from "react"
-import Axios from "axios"
 import { useDispatch } from "react-redux"
 import { loginUser } from "../../../_actions/user_action"
+import { withRouter } from "react-router-dom"
 
-export default function LoginPage() {
+function LoginPage(props) {
   const [Id, setId] = useState("")
   const [Password, setPassword] = useState("")
-  const dispatch = useDispatch
+  const dispatch = useDispatch()
 
   const onEmailHanler = (event) => {
     setId(event.currentTarget.value)
@@ -22,7 +22,14 @@ export default function LoginPage() {
       admId: Id,
       admPw: Password,
     }
-    dispatch(loginUser(body))
+    dispatch(loginUser(body)).then((response) => {
+      console.log(response)
+      if (response.payload.code === 0) {
+        props.history.push("/")
+      } else {
+        alert(response.payload.msg)
+      }
+    })
   }
 
   return (
@@ -46,3 +53,5 @@ export default function LoginPage() {
     </div>
   )
 }
+
+export default withRouter(LoginPage)
